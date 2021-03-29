@@ -26,6 +26,9 @@ RGLInit <- function(new.device = FALSE, width = 500) {
 #' # plot a box
 #' box <- Box(width = 1, length = 1, height = 1, origin = c(0, 0,0))
 #' PlotCube(box)
+#' @export
+
+
 PlotCube <- function (object,
                       plot_origin = TRUE, ...) {
 
@@ -85,6 +88,8 @@ PlotCube <- function (object,
 #' @param packing_solution - A list
 #' @return Returns as many plots of Containers with placed Boxes
 #'         as many nonempty Containers are in the packing solution
+#' @export
+
 PlotPackingSolution <- function (packing_solution) {
 
     for (i in 1:length(packing_solution)) {
