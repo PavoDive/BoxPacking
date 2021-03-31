@@ -3,13 +3,14 @@
 #' @param new.device - A logical value. If TRUE, creates a new device
 #' @param width the width of the device
 #' @import rgl
+#' @export
 RGLInit <- function(new.device = FALSE, width = 500) {
-    if (new.device | rgl.cur() == 0) {  # rgl.cur(): returns active device ID
-        rgl.open()
-        par3d(windowRect = 50 + c(0, 0, width, width))
-        rgl.bg(color = "white")
+    if (new.device | rgl::rgl.cur() == 0) {  # rgl.cur(): returns active device ID
+        rgl::rgl.open()
+        rgl::par3d(windowRect = 50 + c(0, 0, width, width))
+        rgl::rgl.bg(color = "white")
     }
-    rgl.viewpoint(theta = 40, phi = 20)
+    rgl::rgl.viewpoint(theta = 40, phi = 20)
 }
 
 #' Plot 3D cube
@@ -72,13 +73,13 @@ PlotCube <- function (object,
     } else {
         # randomly select color for cube
         colors <- c('blue', 'red', 'green', 'orange')
-        cube_color <- sample(colors, 1)
+        cube_color <- sample(grDevices::colors(distinct = TRUE)[-c(1, 3:7, 12, 16, 21, 57)], 1)
     }
 
     # plot cube
-    segments3d(lines, line_antialias = TRUE, color = cube_color, ...)
+    rgl::segments3d(lines, line_antialias = TRUE, color = cube_color)
     if (plot_origin) {
-       points3d(x = 0, y = 0, z = 0, color = 'red', size = 7)
+       rgl::points3d(x = 0, y = 0, z = 0, color = 'red', size = 7)
     }
 }
 
@@ -109,5 +110,6 @@ PlotPackingSolution <- function (packing_solution) {
             }
         }
     }
+    rgl::rglwidget()
 
 }

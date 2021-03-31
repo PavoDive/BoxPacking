@@ -2,8 +2,8 @@
 % Please edit documentation in R/objects_definition.R
 \docType{class}
 \name{Container-class}
-\alias{Container}
 \alias{Container-class}
+\alias{Container}
 \title{An s4 class to represent a Container}
 \description{
 An s4 class to represent a Container
@@ -19,9 +19,9 @@ An s4 class to represent a Container
 
 \item{\code{width}}{A numeric}
 }}
+
 \examples{
 # create a container with size 2 x 2 x 2
 c1 <- Container(length = 2, height = 2, width = 2)
 
 }
-

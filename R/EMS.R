@@ -1,17 +1,19 @@
 #' Create Empty Maximal Spaces
 #'
-#' @param container - An object of class 'Container' or 'EMS' 
+#' @param container - An object of class 'Container' or 'EMS'
 #' @param box       - An object of class 'Box'
-#'  
+#'
 #' @return A list of instance of class EMS or empty list
-#' @examples 
+#' @examples
 #' container <- Container(width = 2, length = 4, height = 2)
 #' box <- Box(width = 1, length = 1, height = 1, origin = c(0, 0,0))
-#' 
+#'
 #' CreateEMS(container, box)
-CreateEMS <- function (container, 
+#' @export
+#'
+CreateEMS <- function (container,
                        box) {
-    
+
     # stop if box origin is not specified
     if (length(box@origin) == 0) {
         stop('Specify origin for the box')
@@ -21,7 +23,7 @@ CreateEMS <- function (container,
     #'
     #' @param container - An object of class 'Container' or 'EMS'
     #' @param box       - An object of class 'Box'
-    #' @return TRUE/FALSE 
+    #' @return TRUE/FALSE
     CheckIfBoxIsOutside <- function (container, box) {
         # get top and bottom vertexes of the container
         container_vertex1 <- container@origin
@@ -33,7 +35,7 @@ CreateEMS <- function (container,
         box_vertex3 <- box@origin + c(0, 0, box@width)
         box_vertex4 <- box@origin + c(box@length, 0, 0)
 
-        is_outside <- 
+        is_outside <-
             (container_vertex1[2] >= box_vertex2[2] |
              container_vertex2[2] <= box_vertex1[2] |
              container_vertex2[1] <= box_vertex1[1] |
@@ -43,7 +45,7 @@ CreateEMS <- function (container,
 
         return(is_outside)
     }
-    
+
     #' Check if EMS has nonzero parameters
     #'
     #' @param EMS - An instance of class EMS
@@ -58,73 +60,73 @@ CreateEMS <- function (container,
 
 
     if (CheckIfBoxIsOutside(container, box)) {
-        return(list())        
+        return(list())
     }
 
     ems_list <- list()
-    
+
     # EMS 1:
-    EMS1 <- EMS(origin = container@origin, 
+    EMS1 <- EMS(origin = container@origin,
                 length = box@origin[1] - container@origin[1],
                 height = container@height,
                 width = container@width
                 )
-    
+
     if (CheckIfEMSvalid(EMS1)) {
         ems_list <- c(ems_list, EMS1)
     }
-    
+
     # EMS 2:
-    EMS2 <- EMS(origin = container@origin, 
+    EMS2 <- EMS(origin = container@origin,
                 length = container@length,
                 height = container@height,
                 width = box@origin[3] - container@origin[3]
                 )
-    
+
     if (CheckIfEMSvalid(EMS2)) {
         ems_list <- c(ems_list, EMS2)
     }
-    
+
     # EMS 3:
-    EMS3 <- EMS(origin = c(box@origin[1], container@origin[2:3]) + c(box@length, 0, 0), 
+    EMS3 <- EMS(origin = c(box@origin[1], container@origin[2:3]) + c(box@length, 0, 0),
                 height = container@height,
                 width = container@width
                 )
     EMS3@length <- ((container@origin + c(container@length, 0, 0)) - EMS3@origin)[1]
-    
+
     if (CheckIfEMSvalid(EMS3)) {
         ems_list <- c(ems_list, EMS3)
     }
-    
+
     # EMS 4:
-    EMS4 <- EMS(origin = c(container@origin[1:2], box@origin[3]) + c(0, 0, box@width), 
+    EMS4 <- EMS(origin = c(container@origin[1:2], box@origin[3]) + c(0, 0, box@width),
                 length = container@length,
                 height = container@height
                 )
     EMS4@width <- ((container@origin + c(0, 0, container@width)) - EMS4@origin)[3]
-    
+
     if (CheckIfEMSvalid(EMS4)) {
         ems_list <- c(ems_list, EMS4)
     }
-    
+
     # EMS 5:
-    EMS5 <- EMS(origin = c(container@origin[1], box@origin[2], container@origin[3]) + c(0, box@height, 0), 
+    EMS5 <- EMS(origin = c(container@origin[1], box@origin[2], container@origin[3]) + c(0, box@height, 0),
                 length = container@length,
                 width = container@width
                 )
     EMS5@height <- ((container@origin + c(0, container@height, 0)) - EMS5@origin)[2]
-    
+
     if (CheckIfEMSvalid(EMS5)) {
         ems_list <- c(ems_list, EMS5)
     }
-    
+
     # EMS 6:
-    EMS6 <- EMS(origin = container@origin, 
+    EMS6 <- EMS(origin = container@origin,
                 length = container@length,
                 height = box@origin[2] - container@origin[2],
                 width = container@width
                 )
-    
+
     if (CheckIfEMSvalid(EMS6)) {
         ems_list <- c(ems_list, EMS6)
     }
@@ -141,14 +143,14 @@ CreateEMS <- function (container,
 CheckIfEMSisInsideOtherEMS <- function (ems_to_check, ems) {
     # get 2 vertexes of ems_to_check
     ems_to_check_vertex1 <- ems_to_check@origin
-    ems_to_check_vertex2 <- 
+    ems_to_check_vertex2 <-
         ems_to_check@origin + c(ems_to_check@length, ems_to_check@height, ems_to_check@width)
 
     # get 2 vertexes of ems
     ems_vertex1 <- ems@origin
     ems_vertex2 <- ems@origin + c(ems@length, ems@height, ems@width)
 
-    ems_is_inside <- 
+    ems_is_inside <-
         all(ems_to_check_vertex1 >= ems_vertex1) &
         all(ems_to_check_vertex2 <= ems_vertex2)
 
@@ -184,7 +186,7 @@ EliminateEMSList <- function (ems_list) {
         ems_list <- ems_list[-ind_remove]
     }
 
-    return(ems_list) 
+    return(ems_list)
 }
 
 
@@ -194,7 +196,7 @@ EliminateEMSList <- function (ems_list) {
 #' @param ems - An object of class EMS
 #' @return TRUE/FALSE
 CheckIfBoxEqualsEMS <- function (box, ems) {
-    BoxEqualsEMS <- 
+    BoxEqualsEMS <-
         (all(box@origin == ems@origin) &
          box@length == ems@length &
          box@height == ems@height &
@@ -206,15 +208,15 @@ CheckIfBoxEqualsEMS <- function (box, ems) {
 
 #' Update list of container's EMS after box is placed
 #'
-#' @param ems_list - A list of objects of class EMS 
+#' @param ems_list - A list of objects of class EMS
 #' @param box      - An object of class Box
 #'
 #' @return A list of objects of class EMS
 UpdateEMS <- function (ems_list, box) {
     new_ems_list <- ems_list
 
-    # indeces of EMS that are going to be updated and 
-    # therefore replaced by it's update 
+    # indeces of EMS that are going to be updated and
+    # therefore replaced by it's update
     ind_to_remove <- c()
 
     for (i in 1:length(ems_list)) {
@@ -225,13 +227,13 @@ UpdateEMS <- function (ems_list, box) {
             ind_to_remove <- c(ind_to_remove, i)
             new_ems_list <- c(new_ems_list, new_ems)
         }
-    } 
+    }
 
     # remove EMS that were updated
     if (length(ind_to_remove) != 0) {
         new_ems_list <- new_ems_list[-ind_to_remove]
     }
-    
+
     # remove EMS that are inside other EMS
     new_ems_list <- EliminateEMSList(new_ems_list)
 
@@ -246,11 +248,11 @@ UpdateEMS <- function (ems_list, box) {
 PrioritizeEMS <- function (ems_list) {
 
     #' Calculate distance (Euclidean) from EMS origin to Box origin
-    #' 
+    #'
     #' @param ems - An object of class EMS
     #' @return A numeric
     CalculateDistanceToBoxOrigin <- function (ems) {
-        distance <- sqrt(sum(ems@origin^2)) 
+        distance <- sqrt(sum(ems@origin^2))
         return(distance)
     }
 

@@ -2,7 +2,7 @@
 #'
 #' @param n_boxes      - An integer
 #' @param n_containers - An integer
-#' @return A list with first element BPS (Box Plasement Sequence) 
+#' @return A list with first element BPS (Box Plasement Sequence)
 #'         and second element CLS (Container Loading Sequence) and
 #'         their appropriate sequences
 CreateChromosome <- function (n_boxes, n_containers) {
@@ -14,7 +14,7 @@ CreateChromosome <- function (n_boxes, n_containers) {
 #' Create 4 Initial Custom Chromosomes
 #'
 #' @param boxes - A list of objects of class Box
-#' @return A list of 4 chromosomes 
+#' @return A list of 4 chromosomes
 CustomChromosomeInitialization <- function (boxes, n_containers) {
     chromosomes <- list()
 
@@ -22,7 +22,7 @@ CustomChromosomeInitialization <- function (boxes, n_containers) {
     boxes_width <- sapply(boxes, function(x) x@width)
     boxes_height <- sapply(boxes, function(x) x@height)
     boxes_volume <- sapply(boxes, function(x) x@length * x@height * x@width)
-    
+
     # sort descending according to length
     ind_by_length <- order(boxes_length, decreasing = TRUE)
     chromosome <- list(BPS = ind_by_length, CLS = sample(1:n_containers))
@@ -52,16 +52,16 @@ CustomChromosomeInitialization <- function (boxes, n_containers) {
 #' @param population_size - An integer
 #' @param n_containers    - An integer
 #' @param boxes           - A list of objects of class Box
-#' @return A list of chromosomes 
-InitializePopulation <- function (population_size, 
-                                  n_containers, 
+#' @return A list of chromosomes
+InitializePopulation <- function (population_size,
+                                  n_containers,
                                   boxes) {
     # get number of boxes
     n_boxes <- length(boxes)
 
     # create 4 custom chromosomes
-    population <- 
-        CustomChromosomeInitialization(boxes = boxes, 
+    population <-
+        CustomChromosomeInitialization(boxes = boxes,
                                        n_containers = n_containers
                                        )
 
@@ -79,13 +79,13 @@ InitializePopulation <- function (population_size,
 }
 
 
-#' Perform Elitism: Select the best Chromosomes within population 
+#' Perform Elitism: Select the best Chromosomes within population
 #'
-#' @param fitness        - A vector with chromosomes scores   
+#' @param fitness        - A vector with chromosomes scores
 #' @param elitism_size - An integer
-#' @return A vector of size 'elitism_size' with indeces of 
+#' @return A vector of size 'elitism_size' with indeces of
 #'         best performing chromosomes
-PerformElitism <- function (fitness, 
+PerformElitism <- function (fitness,
                             elitism_size) {
     best_chromosomes_ind <- order(fitness)[1:elitism_size]
     return(best_chromosomes_ind)
@@ -116,7 +116,7 @@ PerformSelection <- function (population, fitness) {
 #' @param chromosome - A list with BPS and CLS
 #' @return A chromosome
 MutateChromosome <- function (chromosome) {
-    n_boxes <- length(chromosome$BPS) 
+    n_boxes <- length(chromosome$BPS)
     n_containers <- length(chromosome$CLS)
 
     if (n_boxes <= 2) {
@@ -125,9 +125,9 @@ MutateChromosome <- function (chromosome) {
         replace_boxes_ind <- sample(1:n_boxes, 2)
         chromosome$BPS[replace_boxes_ind] <- rev(chromosome$BPS[replace_boxes_ind])
     }
-    
+
     if (n_containers <= 2) {
-        chromosome$CLS <- rev(chromosome$CLS)            
+        chromosome$CLS <- rev(chromosome$CLS)
     } else {
         replace_containers_ind <- sample(1:n_containers, 2)
         chromosome$CLS[replace_containers_ind] <- rev(chromosome$CLS[replace_containers_ind])
@@ -140,14 +140,14 @@ MutateChromosome <- function (chromosome) {
 #' Perform Mutation
 #'
 #' @param population    - A list of chromosomes
-#' @param mutation_prob - A numeric in [0; 1]; A probability for chromosome mutation  
+#' @param mutation_prob - A numeric in [0; 1]; A probability for chromosome mutation
 #' @return A list of chromosomes
 PerformMutation <- function (population, mutation_prob) {
     population_size <- length(population)
 
     # choose chromosomes for mutation with probability 'mutation_prob'
-    chromosomes_ind_to_mutate <- rbinom(n = population_size, size = 1, prob = mutation_prob)
-    
+    chromosomes_ind_to_mutate <- stats::rbinom(n = population_size, size = 1, prob = mutation_prob)
+
     not_mutated_chromosomes <- population[chromosomes_ind_to_mutate == 0]
     chromosomes_to_mutate <- population[chromosomes_ind_to_mutate == 1]
 
@@ -168,7 +168,7 @@ CrossoverChromosomes <- function (parent1, parent2) {
     n_boxes <- length(parent1$BPS)
     n_containers <- length(parent1$CLS)
 
-    # randomly choose 2 cutting points for BPS 
+    # randomly choose 2 cutting points for BPS
     cutting_box_points <- sample(1:n_boxes, 2)
     cut_box_i <- min(cutting_box_points)
     cut_box_j <- max(cutting_box_points)
@@ -185,7 +185,7 @@ CrossoverChromosomes <- function (parent1, parent2) {
     child$BPS[(cut_box_i+1):cut_box_j] <- parent1$BPS[(cut_box_i+1):cut_box_j]
     child$CLS[(cut_con_i+1):cut_con_j] <- parent1$CLS[(cut_con_i+1):cut_con_j]
 
-    # get indeces of missing genes 
+    # get indeces of missing genes
     box_ind <- ifelse(cut_box_j != n_boxes,
                       list(c((cut_box_j + 1):n_boxes, 1:cut_box_i)),
                       list(c(1:cut_box_i))
@@ -206,7 +206,7 @@ CrossoverChromosomes <- function (parent1, parent2) {
 #' Perform Crossover
 #'
 #' @param mating_pool    - A list of chromosomes to crossover
-#' @param crossover_prob - A numeric in [0; 1]; A probability for chromosome crossover  
+#' @param crossover_prob - A numeric in [0; 1]; A probability for chromosome crossover
 #' @return A list of chromosomes
 PerformCrossover <- function (mating_pool, crossover_prob) {
     next_population <- list()
@@ -215,10 +215,10 @@ PerformCrossover <- function (mating_pool, crossover_prob) {
         if (length(mating_pool) > 1) {
             ind <- sample(1:length(mating_pool), 2)
 
-            if (rbinom(1, 1, crossover_prob) == 1) {
+            if (stats::rbinom(1, 1, crossover_prob) == 1) {
                 child1 <- CrossoverChromosomes(mating_pool[[ind[1]]], mating_pool[[ind[2]]])
                 child2 <- CrossoverChromosomes(mating_pool[[ind[2]]], mating_pool[[ind[1]]])
-                
+
                 next_population <- c(next_population, list(child1, child2))
                 mating_pool <- mating_pool[-ind]
             } else {

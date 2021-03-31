@@ -2,8 +2,8 @@
 % Please edit documentation in R/objects_definition.R
 \docType{class}
 \name{Box-class}
-\alias{Box}
 \alias{Box-class}
+\alias{Box}
 \title{An s4 class to represent a Box}
 \description{
 An s4 class to represent a Box
@@ -21,9 +21,9 @@ An s4 class to represent a Box
 
 \item{\code{weight}}{A numeric}
 }}
+
 \examples{
 # create a box with size 1 x 1 x 1
 b1 <- Box(length = 1, height = 1, width = 1)
 
 }
-

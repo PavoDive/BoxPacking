@@ -4,8 +4,17 @@
 \alias{PerformBoxPacking}
 \title{Perform Box Packing}
 \usage{
-PerformBoxPacking(containers, boxes, n_iter, population_size, elitism_size,
-  crossover_prob, mutation_prob, verbose = FALSE, plotSolution = FALSE)
+PerformBoxPacking(
+  containers,
+  boxes,
+  n_iter,
+  population_size,
+  elitism_size,
+  crossover_prob,
+  mutation_prob,
+  verbose = FALSE,
+  plotSolution = FALSE
+)
 }
 \arguments{
 \item{containers}{A list of objects of class Container}
@@ -72,4 +81,3 @@ solution <-
                        )
 
 }
-
