@@ -3,15 +3,15 @@
 
 #' Pack the Boxes into the Containers
 #'
-#' @param boxes                      - A list of objects of class Box 
+#' @param boxes                      - A list of objects of class Box
 #' @param containers                 - A list of objects of class Container
 #' @param box_packing_sequence       - A vector
 #' @param container_loading_sequence - A vector
-#' @return A list of Containers and corresponding Boxes placed into 
-#'         this Containers 
-PackBoxes <- function (boxes, 
-                       containers, 
-                       box_packing_sequence, 
+#' @return A list of Containers and corresponding Boxes placed into
+#'         this Containers
+PackBoxes <- function (boxes,
+                       containers,
+                       box_packing_sequence,
                        container_loading_sequence) {
 
     n <- length(containers)  # number of containers
@@ -30,7 +30,7 @@ PackBoxes <- function (boxes,
     #' @return A list
     CreatePackingSolution <- function (containers) {
         packing_solution <- list()
-        for (i in 1:length(containers)) {
+        for (i in seq_along(containers)) { # for (i in 1:length(containers)) { # it breaks code when list is empty
             packing_solution <- c(packing_solution, list(containers[i]))
         }
 
@@ -70,22 +70,22 @@ PackBoxes <- function (boxes,
                         # 1. choose best box placement
                         box <- PerformPlacementSelection(box, ems)
 
-                        # 2. place box in ems: set box origin to EMS origin 
-                        box@origin <- ems@origin 
+                        # 2. place box in ems: set box origin to EMS origin
+                        box@origin <- ems@origin
 
-                        # 3. write placement in packing solution 
-                        packing_solution[[container_ind]] <- 
+                        # 3. write placement in packing solution
+                        packing_solution[[container_ind]] <-
                             c(packing_solution[[container_ind]], box)
 
                         # 4. update EMS for the container
-                        packing_solution[[container_ind]][[1]]@ems <- 
+                        packing_solution[[container_ind]][[1]]@ems <-
                             UpdateEMS(packing_solution[[container_ind]][[1]]@ems, box)
 
                         # 5. mark the box as placed:
                         placed_boxes[box_ind] <- TRUE
 
                         break
-                    }                           
+                    }
                 }
             }
         }
@@ -113,13 +113,13 @@ CalculateFitness <- function (packing_solution) {
     container_volume <- 0
     boxes_volume <- 0
 
-    for (i in 1:length(packing_solution)) {
+    for (i in seq_along(packing_solution)) { # for (i in 1:length(packing_solution)) { # it breaks code when list is empty
         if (length(packing_solution[[i]]) == 1) {
             # the Container is empty
             next
         } else {
             container_volume <- container_volume + CalculateVolume(packing_solution[[i]][[1]])
-            
+
             for (j in 2:length(packing_solution[[i]])) {
                 boxes_volume <- boxes_volume + CalculateVolume(packing_solution[[i]][[j]])
             }

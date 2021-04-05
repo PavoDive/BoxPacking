@@ -93,7 +93,7 @@ PlotCube <- function (object,
 
 PlotPackingSolution <- function (packing_solution) {
 
-    for (i in 1:length(packing_solution)) {
+    for (i in 1:length(packing_solution)) { # for (i in 1:length(packing_solution)) { # it breaks code when list is empty
         if (length(packing_solution[[i]]) == 1) {
             # the Container is empty
             next

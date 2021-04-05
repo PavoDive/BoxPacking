@@ -167,7 +167,7 @@ CheckIfEMSisInsideOtherEMS <- function (ems_to_check, ems) {
 #' @param ems_list - A list of objects of class EMS
 #' @return An updated list of EMS objects
 EliminateEMSList <- function (ems_list) {
-    sequence <- 1:length(ems_list)
+    sequence <- seq_along(ems_list) # 1:length(ems_list) # it breaks the code when list is empty
     ind_remove <- c()
 
     for (i in sequence) {
@@ -219,7 +219,7 @@ UpdateEMS <- function (ems_list, box) {
     # therefore replaced by it's update
     ind_to_remove <- c()
 
-    for (i in 1:length(ems_list)) {
+    for (i in seq_along(ems_list)) { # for (i in 1:length(ems_list)) { # it breaks the code when list is empty
         ems <- ems_list[[i]]
 
         new_ems <- CreateEMS(ems, box)

@@ -213,7 +213,7 @@ PerformCrossover <- function (mating_pool, crossover_prob) {
 
     while (length(mating_pool) != 0) {
         if (length(mating_pool) > 1) {
-            ind <- sample(1:length(mating_pool), 2)
+            ind <- sample(seq_along(mating_pool), 2) # ind <- sample(1:length(mating_pool), 2) # it breaks code when list is empty
 
             if (stats::rbinom(1, 1, crossover_prob) == 1) {
                 child1 <- CrossoverChromosomes(mating_pool[[ind[1]]], mating_pool[[ind[2]]])
